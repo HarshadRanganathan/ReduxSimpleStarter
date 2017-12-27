@@ -1,12 +1,18 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
 import YTSearch from 'youtube-api-search';
+import reducers from './reducers';
 import SearchBar from './components/search_bar';
 import VideoList from './components/video_list';
 import VideoDetail from './components/video_detail';
+import BookList from './containers/book_list';
+import BookDetail from './containers/book_detail';
 
 const API_KEY = '<your-api-key>';
+const createStoreWithMiddleware = applyMiddleware()(createStore);
 
 class App extends Component {
     constructor(props) {
@@ -37,6 +43,8 @@ class App extends Component {
                 <VideoList 
                     onVideoSelect={selectedVideo => this.setState({selectedVideo}) }
                     videos={this.state.videos} />
+                <BookList />
+                <BookDetail />
             </div>
         );
     };
@@ -45,4 +53,8 @@ class App extends Component {
 // use REACTDOM for DOM rendering
 // param1: REACT element to be rendered in DOM
 // param2: target container
-ReactDOM.render(<App />, document.querySelector('.container'));
+ReactDOM.render(
+    <Provider store={createStoreWithMiddleware(reducers)}>
+        <App />
+    </Provider>, 
+    document.querySelector('.container'));
